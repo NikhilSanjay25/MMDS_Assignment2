@@ -1,0 +1,13 @@
+{
+  "raw_rows": 1389994,
+  "null_counts": {
+    "white_elo": 105,
+    "black_elo": 108,
+    "ts": 0,
+    "base": 4391,
+    "num_moves": 0
+  },
+  "clean_rows": 1385409,
+  "removed_rows": 4585,
+  "query_seconds": 27.5
+}

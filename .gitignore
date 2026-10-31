@@ -1,0 +1,9 @@
+data/
+hadoop/
+__pycache__/
+*.aux
+*.log
+!results/part_e_run.log
+*.out
+*.pdf
+!figures/*.pdf

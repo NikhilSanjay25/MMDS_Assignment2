@@ -1,0 +1,13 @@
+category,termination,games,pct_in_category
+Blitz,Normal,361466,68.81
+Blitz,Time forfeit,163828,31.19
+Blitz,Rules infraction,30,0.01
+Bullet,Time forfeit,213560,57.33
+Bullet,Normal,158941,42.67
+Bullet,Rules infraction,21,0.01
+Classical,Normal,31613,84.63
+Classical,Time forfeit,5712,15.29
+Classical,Rules infraction,28,0.07
+Rapid,Normal,375058,83.31
+Rapid,Time forfeit,75082,16.68
+Rapid,Rules infraction,70,0.02

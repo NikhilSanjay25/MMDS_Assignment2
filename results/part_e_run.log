@@ -1,0 +1,171 @@
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/10/31 21:30:36 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+C:\Users\nikhi\AppData\Local\Programs\Python\Python311\Lib\site-packages\pyspark\streaming\context.py:72: FutureWarning: DStream is deprecated as of Spark 3.4.0. Migrate to Structured Streaming.
+  warnings.warn(
+[producer] sent burst 0 (10000 games)
+[producer] sent burst 1 (10000 games)
+[producer] sent burst 2 (10000 games)
+[producer] sent burst 3 (10000 games)
+BATCH {'batch_id': 1, 'time': '21:30:48', 'records': 10000, 'white_wins': 5199, 'black_wins': 4482, 'draws': 319, 'avg_rating': 1628.0} | running: {'Time forfeit': 3448, 'Normal': 6552}
+[producer] sent burst 4 (10000 games)
+[producer] sent burst 5 (10000 games)
+WINDOW(9s) {'Normal': 6552, 'Time forfeit': 3448}
+[producer] sent burst 6 (10000 games)
+BATCH {'batch_id': 2, 'time': '21:30:58', 'records': 10000, 'white_wins': 5072, 'black_wins': 4599, 'draws': 329, 'avg_rating': 1628.5} | running: {'Time forfeit': 6418, 'Normal': 13582}
+[producer] sent burst 7 (10000 games)
+[producer] sent burst 8 (10000 games)
+[producer] sent burst 9 (10000 games)
+WINDOW(9s) {'Normal': 13582, 'Time forfeit': 6418}
+BATCH {'batch_id': 3, 'time': '21:31:08', 'records': 10000, 'white_wins': 5226, 'black_wins': 4482, 'draws': 292, 'avg_rating': 1612.2} | running: {'Time forfeit': 9607, 'Normal': 20393}
+[producer] sent burst 10 (10000 games)
+[producer] sent burst 11 (10000 games)
+[producer] sent burst 12 (10000 games)
+WINDOW(9s) {'Normal': 20393, 'Time forfeit': 9607}
+[producer] sent burst 13 (10000 games)
+BATCH {'batch_id': 4, 'time': '21:31:17', 'records': 10000, 'white_wins': 5099, 'black_wins': 4556, 'draws': 345, 'avg_rating': 1620.6} | running: {'Time forfeit': 12855, 'Normal': 27145}
+[producer] sent burst 14 (10000 games)
+[producer] sent burst 15 (10000 games)
+WINDOW(9s) {'Normal': 20593, 'Time forfeit': 9407}
+[producer] sent burst 16 (10000 games)
+BATCH {'batch_id': 5, 'time': '21:31:27', 'records': 10000, 'white_wins': 5082, 'black_wins': 4591, 'draws': 327, 'avg_rating': 1629.5} | running: {'Time forfeit': 16228, 'Normal': 33772}
+[producer] sent burst 17 (10000 games)
+[producer] sent burst 18 (10000 games)
+WINDOW(9s) {'Normal': 20190, 'Time forfeit': 9810}
+[producer] sent burst 19 (10000 games)
+BATCH {'batch_id': 6, 'time': '21:31:37', 'records': 10000, 'white_wins': 5129, 'black_wins': 4537, 'draws': 334, 'avg_rating': 1622.6} | running: {'Time forfeit': 19445, 'Normal': 40555}
+26/10/31 21:31:38 ERROR ReceiverTracker: Deregistered receiver for stream 0: Restarting receiver with delay 2000ms: Socket data stream had no more data
+26/10/31 21:31:40 ERROR ReceiverTracker: Deregistered receiver for stream 0: Restarting receiver with delay 2000ms: Error connecting to localhost:9999 - java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:591)
+	at java.base/sun.nio.ch.Net.connect(Net.java:580)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:593)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at java.base/java.net.Socket.connect(Socket.java:583)
+	at java.base/java.net.Socket.<init>(Socket.java:507)
+	at java.base/java.net.Socket.<init>(Socket.java:287)
+	at org.apache.spark.streaming.dstream.SocketReceiver.onStart(SocketInputDStream.scala:61)
+	at org.apache.spark.streaming.receiver.ReceiverSupervisor.startReceiver(ReceiverSupervisor.scala:149)
+	at org.apache.spark.streaming.receiver.ReceiverSupervisor.$anonfun$restartReceiver$1(ReceiverSupervisor.scala:198)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:23)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:659)
+	at scala.util.Success.$anonfun$map$1(Try.scala:255)
+	at scala.util.Success.map(Try.scala:213)
+	at scala.concurrent.Future.$anonfun$map$1(Future.scala:292)
+	at scala.concurrent.impl.Promise.liftedTree1$1(Promise.scala:33)
+	at scala.concurrent.impl.Promise.$anonfun$transform$1(Promise.scala:33)
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:64)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+26/10/31 21:31:42 ERROR ReceiverTracker: Deregistered receiver for stream 0: Restarting receiver with delay 2000ms: Error connecting to localhost:9999 - java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:591)
+	at java.base/sun.nio.ch.Net.connect(Net.java:580)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:593)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at java.base/java.net.Socket.connect(Socket.java:583)
+	at java.base/java.net.Socket.<init>(Socket.java:507)
+	at java.base/java.net.Socket.<init>(Socket.java:287)
+	at org.apache.spark.streaming.dstream.SocketReceiver.onStart(SocketInputDStream.scala:61)
+	at org.apache.spark.streaming.receiver.ReceiverSupervisor.startReceiver(ReceiverSupervisor.scala:149)
+	at org.apache.spark.streaming.receiver.ReceiverSupervisor.$anonfun$restartReceiver$1(ReceiverSupervisor.scala:198)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:23)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:659)
+	at scala.util.Success.$anonfun$map$1(Try.scala:255)
+	at scala.util.Success.map(Try.scala:213)
+	at scala.concurrent.Future.$anonfun$map$1(Future.scala:292)
+	at scala.concurrent.impl.Promise.liftedTree1$1(Promise.scala:33)
+	at scala.concurrent.impl.Promise.$anonfun$transform$1(Promise.scala:33)
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:64)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+26/10/31 21:31:44 ERROR ReceiverTracker: Deregistered receiver for stream 0: Restarting receiver with delay 2000ms: Error connecting to localhost:9999 - java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:591)
+	at java.base/sun.nio.ch.Net.connect(Net.java:580)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:593)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at java.base/java.net.Socket.connect(Socket.java:583)
+	at java.base/java.net.Socket.<init>(Socket.java:507)
+	at java.base/java.net.Socket.<init>(Socket.java:287)
+	at org.apache.spark.streaming.dstream.SocketReceiver.onStart(SocketInputDStream.scala:61)
+	at org.apache.spark.streaming.receiver.ReceiverSupervisor.startReceiver(ReceiverSupervisor.scala:149)
+	at org.apache.spark.streaming.receiver.ReceiverSupervisor.$anonfun$restartReceiver$1(ReceiverSupervisor.scala:198)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:23)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:659)
+	at scala.util.Success.$anonfun$map$1(Try.scala:255)
+	at scala.util.Success.map(Try.scala:213)
+	at scala.concurrent.Future.$anonfun$map$1(Future.scala:292)
+	at scala.concurrent.impl.Promise.liftedTree1$1(Promise.scala:33)
+	at scala.concurrent.impl.Promise.$anonfun$transform$1(Promise.scala:33)
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:64)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+WINDOW(9s) {'Normal': 20162, 'Time forfeit': 9838}
+26/10/31 21:31:46 ERROR ReceiverTracker: Deregistered receiver for stream 0: Restarting receiver with delay 2000ms: Error connecting to localhost:9999 - java.net.ConnectException: Connection refused: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:591)
+	at java.base/sun.nio.ch.Net.connect(Net.java:580)
+	at java.base/sun.nio.ch.NioSocketImpl.connect(NioSocketImpl.java:593)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:327)
+	at java.base/java.net.Socket.connect(Socket.java:633)
+	at java.base/java.net.Socket.connect(Socket.java:583)
+	at java.base/java.net.Socket.<init>(Socket.java:507)
+	at java.base/java.net.Socket.<init>(Socket.java:287)
+	at org.apache.spark.streaming.dstream.SocketReceiver.onStart(SocketInputDStream.scala:61)
+	at org.apache.spark.streaming.receiver.ReceiverSupervisor.startReceiver(ReceiverSupervisor.scala:149)
+	at org.apache.spark.streaming.receiver.ReceiverSupervisor.$anonfun$restartReceiver$1(ReceiverSupervisor.scala:198)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.java:23)
+	at scala.concurrent.Future$.$anonfun$apply$1(Future.scala:659)
+	at scala.util.Success.$anonfun$map$1(Try.scala:255)
+	at scala.util.Success.map(Try.scala:213)
+	at scala.concurrent.Future.$anonfun$map$1(Future.scala:292)
+	at scala.concurrent.impl.Promise.liftedTree1$1(Promise.scala:33)
+	at scala.concurrent.impl.Promise.$anonfun$transform$1(Promise.scala:33)
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:64)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+
+BATCH {'batch_id': 7, 'time': '21:31:47', 'records': 10000, 'white_wins': 5104, 'black_wins': 4602, 'draws': 294, 'avg_rating': 1592.8} | running: {'Time forfeit': 22567, 'Normal': 47433}
+WINDOW(9s) {'Normal': 20288, 'Time forfeit': 9712}
+BATCH {'batch_id': 8, 'time': '21:31:57', 'records': 10000, 'white_wins': 5091, 'black_wins': 4589, 'draws': 320, 'avg_rating': 1611.7} | running: {'Time forfeit': 25758, 'Normal': 54242}
+WINDOW(9s) {'Normal': 20470, 'Time forfeit': 9530}
+BATCH {'batch_id': 9, 'time': '21:32:06', 'records': 10000, 'white_wins': 5169, 'black_wins': 4536, 'draws': 295, 'avg_rating': 1591.0} | running: {'Time forfeit': 28952, 'Normal': 61048}
+WINDOW(9s) {'Normal': 20493, 'Time forfeit': 9507}
+BATCH {'batch_id': 10, 'time': '21:32:16', 'records': 10000, 'white_wins': 5100, 'black_wins': 4604, 'draws': 296, 'avg_rating': 1619.2} | running: {'Time forfeit': 32130, 'Normal': 67870}
+WINDOW(9s) {'Normal': 20437, 'Time forfeit': 9563}
+BATCH {'batch_id': 11, 'time': '21:32:25', 'records': 10000, 'white_wins': 5173, 'black_wins': 4556, 'draws': 271, 'avg_rating': 1611.5} | running: {'Time forfeit': 35120, 'Normal': 74880}
+WINDOW(9s) {'Normal': 20638, 'Time forfeit': 9362}
+BATCH {'batch_id': 12, 'time': '21:32:35', 'records': 10000, 'white_wins': 5272, 'black_wins': 4426, 'draws': 302, 'avg_rating': 1604.9} | running: {'Time forfeit': 38292, 'Normal': 81699, 'Rules infraction': 9}
+WINDOW(9s) {'Normal': 20651, 'Rules infraction': 9, 'Time forfeit': 9340}
+BATCH {'batch_id': 13, 'time': '21:32:45', 'records': 10000, 'white_wins': 5150, 'black_wins': 4537, 'draws': 313, 'avg_rating': 1622.3} | running: {'Time forfeit': 41514, 'Normal': 88443, 'Rules infraction': 43}
+WINDOW(9s) {'Normal': 20573, 'Rules infraction': 43, 'Time forfeit': 9384}
+BATCH {'batch_id': 14, 'time': '21:32:54', 'records': 10000, 'white_wins': 5191, 'black_wins': 4502, 'draws': 307, 'avg_rating': 1618.6} | running: {'Time forfeit': 44859, 'Normal': 95090, 'Rules infraction': 51}
+WINDOW(9s) {'Normal': 20210, 'Rules infraction': 51, 'Time forfeit': 9739}
+BATCH {'batch_id': 15, 'time': '21:33:04', 'records': 10000, 'white_wins': 5145, 'black_wins': 4569, 'draws': 286, 'avg_rating': 1609.6} | running: {'Time forfeit': 48147, 'Normal': 101802, 'Rules infraction': 51}
+WINDOW(9s) {'Normal': 20103, 'Rules infraction': 42, 'Time forfeit': 9855}
+BATCH {'batch_id': 16, 'time': '21:33:14', 'records': 10000, 'white_wins': 5109, 'black_wins': 4550, 'draws': 341, 'avg_rating': 1613.8} | running: {'Time forfeit': 51525, 'Normal': 108424, 'Rules infraction': 51}
+WINDOW(9s) {'Normal': 19981, 'Rules infraction': 8, 'Time forfeit': 10011}
+BATCH {'batch_id': 17, 'time': '21:33:23', 'records': 10000, 'white_wins': 5093, 'black_wins': 4584, 'draws': 323, 'avg_rating': 1605.1} | running: {'Time forfeit': 54872, 'Normal': 115077, 'Rules infraction': 51}
+WINDOW(9s) {'Normal': 19987, 'Time forfeit': 10013}
+BATCH {'batch_id': 18, 'time': '21:33:35', 'records': 20000, 'white_wins': 10222, 'black_wins': 9210, 'draws': 568, 'avg_rating': 1614.5} | running: {'Time forfeit': 61679, 'Normal': 128268, 'Rules infraction': 53}
+WINDOW(9s) {'Normal': 26466, 'Rules infraction': 2, 'Time forfeit': 13532}
+WINDOW(9s) {'Normal': 19844, 'Rules infraction': 2, 'Time forfeit': 10154}
+BATCH {'batch_id': 19, 'time': '21:33:52', 'records': 10000, 'white_wins': 5132, 'black_wins': 4585, 'draws': 283, 'avg_rating': 1615.1} | running: {'Time forfeit': 64968, 'Normal': 134978, 'Rules infraction': 54}
+WINDOW(9s) {'Normal': 19901, 'Rules infraction': 3, 'Time forfeit': 10096}
+WINDOW(9s) {'Normal': 6710, 'Rules infraction': 1, 'Time forfeit': 3289}
+WINDOW(9s) {'Normal': 6710, 'Rules infraction': 1, 'Time forfeit': 3289}
+{'api': 'Spark Streaming (DStream micro-batches)', 'bursts_sent': 20, 'rows_per_burst': 10000, 'batch_interval_seconds': 3, 'non_empty_batches': 19, 'records_processed': 200000, 'wall_seconds': 232.7}
+SUCCESS: The process with PID 8828 (child process of PID 17428) has been terminated.
+SUCCESS: The process with PID 17428 (child process of PID 31444) has been terminated.
+SUCCESS: The process with PID 31444 (child process of PID 20764) has been terminated.

@@ -1,0 +1,9 @@
+{
+  "api": "Spark Streaming (DStream micro-batches)",
+  "bursts_sent": 20,
+  "rows_per_burst": 10000,
+  "batch_interval_seconds": 3,
+  "non_empty_batches": 19,
+  "records_processed": 200000,
+  "wall_seconds": 232.7
+}

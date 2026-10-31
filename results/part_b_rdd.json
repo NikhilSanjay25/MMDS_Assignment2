@@ -1,0 +1,241 @@
+{
+  "num_partitions": 24,
+  "total_lines_incl_header": 1389995,
+  "num_games": 1389994,
+  "top_openings": [
+    [
+      "Van't Kruijs Opening",
+      41190
+    ],
+    [
+      "Horwitz Defense",
+      27499
+    ],
+    [
+      "Modern Defense",
+      27203
+    ],
+    [
+      "Owen Defense",
+      23675
+    ],
+    [
+      "Scandinavian Defense: Mieses-Kotroc Variation",
+      22997
+    ],
+    [
+      "French Defense: Knight Variation",
+      22723
+    ],
+    [
+      "Sicilian Defense: Bowdler Attack",
+      18755
+    ],
+    [
+      "Scandinavian Defense",
+      18186
+    ],
+    [
+      "Hungarian Opening",
+      17812
+    ],
+    [
+      "Philidor Defense #3",
+      17605
+    ],
+    [
+      "Bishop's Opening",
+      17578
+    ],
+    [
+      "Caro-Kann Defense",
+      16784
+    ],
+    [
+      "Queen's Pawn Game #2",
+      16761
+    ],
+    [
+      "Sicilian Defense",
+      16707
+    ],
+    [
+      "Philidor Defense #2",
+      15272
+    ]
+  ],
+  "distinct_openings": 2636,
+  "top_moves": [
+    [
+      "O-O",
+      1707127
+    ],
+    [
+      "Nf3",
+      1349797
+    ],
+    [
+      "e4",
+      1299386
+    ],
+    [
+      "d4",
+      1218674
+    ],
+    [
+      "Nf6",
+      1206276
+    ],
+    [
+      "e5",
+      1178241
+    ],
+    [
+      "d5",
+      1105652
+    ],
+    [
+      "Nc3",
+      1010297
+    ],
+    [
+      "Nc6",
+      998613
+    ],
+    [
+      "c5",
+      784659
+    ],
+    [
+      "e6",
+      761555
+    ],
+    [
+      "c4",
+      739963
+    ],
+    [
+      "d6",
+      645784
+    ],
+    [
+      "f4",
+      628802
+    ],
+    [
+      "b5",
+      595407
+    ]
+  ],
+  "total_moves": 93334516,
+  "first_moves": [
+    [
+      "e4",
+      823698
+    ],
+    [
+      "d4",
+      334633
+    ],
+    [
+      "e3",
+      46150
+    ],
+    [
+      "c4",
+      39241
+    ],
+    [
+      "Nf3",
+      34758
+    ],
+    [
+      "g3",
+      30689
+    ],
+    [
+      "b3",
+      17944
+    ],
+    [
+      "f4",
+      16767
+    ]
+  ],
+  "top_players": [
+    [
+      "ZMAJ",
+      5697
+    ],
+    [
+      "ribarisah",
+      5438
+    ],
+    [
+      "147a",
+      4380
+    ],
+    [
+      "speedyG",
+      4338
+    ],
+    [
+      "amir51",
+      3948
+    ],
+    [
+      "guantebla",
+      3807
+    ],
+    [
+      "houdjini",
+      3594
+    ],
+    [
+      "karlovac",
+      3556
+    ],
+    [
+      "Grga1",
+      3512
+    ],
+    [
+      "NONIKATIN",
+      3489
+    ],
+    [
+      "luciosergio",
+      3300
+    ],
+    [
+      "irina",
+      3281
+    ],
+    [
+      "rikpal",
+      3176
+    ],
+    [
+      "juin",
+      3091
+    ],
+    [
+      "aavza50",
+      2999
+    ]
+  ],
+  "distinct_players": 36666,
+  "gap300_games": 165249,
+  "gap300_underdog_wins": 23018,
+  "results": {
+    "0-1": 638037,
+    "1-0": 707167,
+    "1/2-1/2": 44790
+  },
+  "terminations": {
+    "Rules infraction": 156,
+    "Time forfeit": 458266,
+    "Normal": 931572
+  },
+  "elapsed_seconds": 274.6
+}

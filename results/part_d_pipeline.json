@@ -1,0 +1,14 @@
+{
+  "rows_in": 1389994,
+  "rows_after_rdd_cleaning": 1385456,
+  "stage_seconds": {
+    "1_input_count": 14.3,
+    "2_rdd_processing": 27.8,
+    "3a_rdd_to_dataframe": 2.6,
+    "3b_dataframe_materialise": 15.5,
+    "4_analytics": 3.0
+  },
+  "spark_jobs_run": 7,
+  "rdd_partitions": 24,
+  "df_plan": "== Physical Plan ==\nAdaptiveSparkPlan isFinalPlan=false\n+- HashAggregate(keys=[category#2], functions=[count(1)])\n   +- Exchange hashpartitioning(category#2, 16), ENSURE_REQUIREMENTS, [plan_id=141]\n      +- HashAggregate(keys=[category#2], functions=[partial_count(1)])\n         +- InMemoryTableScan [category#2]\n               +- InMemoryRelation [game_id#0, opening#1, category#2, avg_elo#3, white_score#4, plies#5], StorageLevel(disk, memory, deserialized, 1 replicas)\n                     +- *(1) Scan ExistingRDD[game_id#0,opening#1,category#2,avg_elo#3,white_score#4,plies#5]\n\n"
+}
