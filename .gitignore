@@ -1,9 +1,40 @@
+# Data (large, downloaded separately - see README)
 data/
 hadoop/
+
+# Python
 __pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# Spark
+spark-warehouse/
+metastore_db/
+derby.log
+checkpoint*/
+
+# LaTeX build files
 *.aux
 *.log
 !results/part_e_run.log
 *.out
+*.toc
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.bbl
+*.blg
 *.pdf
 !figures/*.pdf
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Office lock files (created while a document is open)
+~$*
