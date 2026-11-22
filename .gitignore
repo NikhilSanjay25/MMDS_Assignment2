@@ -1,6 +1,31 @@
-# Data (large, downloaded separately - see README)
+# Pushed: src/, scripts/, report/report.tex, figures/*.pdf, results/ (incl. logs/),
+# the presentation, README.md, requirements.txt, tools/winutils_shim.cs.
+# Everything below is large, downloadable, generated, or not ours.
+
+# Data and downloaded tools (recreate with scripts/fetch_vendor.sh / setup_linux.sh)
 data/
+vendor/
 hadoop/
+
+# Course reference material (lecture slides, assignment brief, other teams' decks)
+8.Apache Spark.pptx
+Assignment Pattern.docx
+Game Recommendation Data Preprocessing.pptx
+
+# Generated copies (make_figures.py PNGs for slides, Overleaf bundle)
+figures/png/
+overleaf_upload/
+overleaf_upload.zip
+
+# LaTeX build output (only the .tex source is kept)
+report/*
+!report/report.tex
+*.pdf
+!figures/*.pdf
+
+# Logs: only the run logs in results/logs are kept
+*.log
+!results/logs/*.log
 
 # Python
 __pycache__/
@@ -10,31 +35,16 @@ venv/
 env/
 .ipynb_checkpoints/
 
-# Spark
+# Spark / Kafka runtime state
 spark-warehouse/
 metastore_db/
 derby.log
 checkpoint*/
 
-# LaTeX build files
-*.aux
-*.log
-!results/part_e_run.log
-*.out
-*.toc
-*.synctex.gz
-*.fdb_latexmk
-*.fls
-*.bbl
-*.blg
-*.pdf
-!figures/*.pdf
-
-# OS / editor
+# OS / editor / local tool settings
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
-
-# Office lock files (created while a document is open)
+.claude/
 ~$*
