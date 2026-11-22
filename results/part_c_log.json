@@ -9,5 +9,12 @@
   },
   "clean_rows": 1385409,
   "removed_rows": 4585,
-  "query_seconds": 27.5
+  "query_seconds": 37.7,
+  "environment": {
+    "python": "3.11.11",
+    "pyspark": "3.5.3",
+    "os": "Linux 5.15.167.4-microsoft-standard-WSL2",
+    "cpus": 20,
+    "master": "local[*]"
+  }
 }

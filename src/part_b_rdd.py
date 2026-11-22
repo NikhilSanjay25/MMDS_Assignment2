@@ -3,7 +3,7 @@ import csv
 import json
 import time
 
-from common import DATA, RESULTS, get_spark
+from common import DATA, RESULTS, environment, get_spark
 
 spark = get_spark("PartB-RDD")
 sc = spark.sparkContext
@@ -73,6 +73,7 @@ out["terminations"] = (rows.map(lambda r: (r[11], 1)).reduceByKey(lambda a, b: a
                            .collectAsMap())
 
 out["elapsed_seconds"] = round(time.time() - t0, 1)
+out["environment"] = environment()
 with open(f"{RESULTS}/part_b_rdd.json", "w") as f:
     json.dump(out, f, indent=2)
 print(json.dumps(out, indent=2))

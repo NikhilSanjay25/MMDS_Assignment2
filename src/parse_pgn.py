@@ -1,6 +1,8 @@
-"""Stream a Lichess .pgn.zst dump into a flat CSV (one row per game).
+"""Stream one or more Lichess .pgn.zst dumps into one flat CSV (one row per game).
 
-Usage: python src/parse_pgn.py data/raw/<file>.pgn.zst data/lichess_games.csv
+Games from all inputs are merged and de-duplicated on game id.
+
+Usage: python src/parse_pgn.py data/raw/<month1>.pgn.zst [data/raw/<month2>.pgn.zst ...] data/lichess_games.csv
 """
 import csv
 import io
@@ -42,27 +44,39 @@ def games(stream):
         yield tags, " ".join(movetext)
 
 
-def main(src, dst):
-    n = 0
-    with open(src, "rb") as fh, open(dst, "w", newline="", encoding="utf-8") as out:
-        reader = zstandard.ZstdDecompressor().stream_reader(fh)
-        text = io.TextIOWrapper(reader, encoding="utf-8", errors="replace")
+def main(srcs, dst):
+    n, dup, seen = 0, 0, set()
+    with open(dst, "w", newline="", encoding="utf-8") as out:
         w = csv.writer(out)
         w.writerow(FIELDS)
-        for t, mt in games(text):
-            toks = clean_moves(mt)
-            w.writerow([
-                t.get("Site", "").rsplit("/", 1)[-1], t.get("White", ""), t.get("Black", ""),
-                t.get("Result", ""), t.get("WhiteElo", ""), t.get("BlackElo", ""),
-                t.get("WhiteRatingDiff", ""), t.get("BlackRatingDiff", ""),
-                t.get("ECO", ""), t.get("Opening", ""), t.get("TimeControl", ""),
-                t.get("Termination", ""), t.get("UTCDate", t.get("Date", "")),
-                t.get("UTCTime", ""), len(toks), " ".join(toks)])
-            n += 1
-            if n % 200000 == 0:
-                print(f"{n} games parsed", flush=True)
-    print(f"done: {n} games -> {dst}")
+        for src in srcs:
+            per_file = 0
+            with open(src, "rb") as fh:
+                reader = zstandard.ZstdDecompressor().stream_reader(fh)
+                text = io.TextIOWrapper(reader, encoding="utf-8", errors="replace")
+                for t, mt in games(text):
+                    gid = t.get("Site", "").rsplit("/", 1)[-1]
+                    if gid in seen:
+                        dup += 1
+                        continue
+                    seen.add(gid)
+                    toks = clean_moves(mt)
+                    w.writerow([
+                        gid, t.get("White", ""), t.get("Black", ""),
+                        t.get("Result", ""), t.get("WhiteElo", ""), t.get("BlackElo", ""),
+                        t.get("WhiteRatingDiff", ""), t.get("BlackRatingDiff", ""),
+                        t.get("ECO", ""), t.get("Opening", ""), t.get("TimeControl", ""),
+                        t.get("Termination", ""), t.get("UTCDate", t.get("Date", "")),
+                        t.get("UTCTime", ""), len(toks), " ".join(toks)])
+                    n += 1
+                    per_file += 1
+                    if n % 200000 == 0:
+                        print(f"{n} games parsed", flush=True)
+            print(f"{src}: {per_file} games", flush=True)
+    print(f"done: {n} games ({dup} duplicates skipped) -> {dst}")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    if len(sys.argv) < 3:
+        sys.exit(__doc__)
+    main(sys.argv[1:-1], sys.argv[-1])

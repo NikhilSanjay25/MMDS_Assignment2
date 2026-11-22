@@ -1,0 +1,51 @@
+{
+  "api": "Structured Streaming, Kafka source",
+  "mode": "replay",
+  "topic": "lichess-replay",
+  "trigger_seconds": 3,
+  "max_offsets_per_trigger": 10000,
+  "window": "1 hour",
+  "watermark": "2 hours",
+  "non_empty_batches": 21,
+  "records_processed": 200000,
+  "running_totals_final": {
+    "Normal": 134978,
+    "Rules infraction": 54,
+    "Time forfeit": 64968
+  },
+  "event_time_range": [
+    "2013-12-31 23:00:03",
+    "2014-01-10 09:02:23"
+  ],
+  "windows_emitted": 907,
+  "rows_dropped_by_watermark": 0,
+  "mean_batch_ms": 458.1,
+  "mean_processed_rows_per_sec": 25404.0,
+  "sampling": {
+    "sample_size": 2000,
+    "termination_mix_sample": {
+      "Normal": 0.6815,
+      "Time forfeit": 0.3175,
+      "Rules infraction": 0.001
+    },
+    "termination_mix_full_stream": {
+      "Normal": 0.6749,
+      "Rules infraction": 0.0003,
+      "Time forfeit": 0.3248
+    }
+  },
+  "filtering": {
+    "bloom_bits": 958505,
+    "bloom_hashes": 7,
+    "distinct_players_exact": 11607,
+    "distinct_players_bloom": 11607
+  },
+  "wall_seconds": 85.4,
+  "environment": {
+    "python": "3.11.11",
+    "pyspark": "3.5.3",
+    "os": "Linux 5.15.167.4-microsoft-standard-WSL2",
+    "cpus": 20,
+    "master": "local[*]"
+  }
+}

@@ -5,7 +5,7 @@ import time
 from pyspark.sql import functions as F
 from pyspark.sql.types import IntegerType, StringType, StructField, StructType
 
-from common import DATA, RESULTS, get_spark, save
+from common import DATA, RESULTS, environment, get_spark, save
 
 spark = get_spark("PartC-DataFrame")
 log = {}
@@ -124,6 +124,7 @@ q_upset = spark.sql("""
 q_upset.show(); save(q_upset, "c_sql_upsets")
 
 log["query_seconds"] = round(time.time() - t0, 1)
+log["environment"] = environment()
 with open(f"{RESULTS}/part_c_log.json", "w") as f:
     json.dump(log, f, indent=2, default=str)
 print(json.dumps(log, indent=2, default=str))

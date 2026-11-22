@@ -22,7 +22,7 @@
 
 \title{\textbf{Scalable Analysis of 1.39 Million Lichess Chess Games\\with Apache Spark and PySpark}}
 \author{Mining of Massive Datasets --- Assignment 2 (Group)\\[2pt]
-\small Group members: \textit{[add names / roll numbers]}}
+\small Nikhil Sanjay (BL.EN.U4CSE23239) \quad Ravva Siddhartha (BL.EN.U4CSE23246) \quad Andrew Tom Mathew (BL.EN.U4CSE23269)}
 \date{}
 
 \begin{document}
@@ -35,15 +35,16 @@ dataset of \textbf{1,389,994 rated chess games} from the open Lichess database
 The pipeline parses the raw PGN dump into a flat table, loads it with RDDs
 (\texttt{map}, \texttt{filter}, \texttt{flatMap}, \texttt{reduceByKey}), cleans and
 analyses it with DataFrames and Spark SQL, chains both into a documented
-RDD$\rightarrow$DataFrame workflow, and finally replays 200,000 games as a live feed
-through Spark's micro-batch streaming engine. Results include the most played openings,
+RDD$\rightarrow$DataFrame workflow, and processes streams of games with DStreams,
+Structured Streaming and Kafka, including a live feed of games finishing on lichess.org.
+A Spark Standalone cluster run measures how the jobs scale from one to eight executors. Results include the most played openings,
 the effect of time control on game length and termination, white's first-move advantage
 (52.5\% score), a monotone relationship between rating gap and upset probability
 (44\% for equal players, 10\% for gaps over 400 points) and the observation that draws
-become more than twice as frequent between 1000- and 2200-rated players. We also
-report an honest account of the platform limits met on Windows, notably that
-Structured Streaming could not be executed locally, so the streaming results come from
-Spark's DStream micro-batch API.
+become more than twice as frequent between 1000- and 2200-rated players. On the
+streaming side, all three engines agree record for record on a 200,000-game feed, a 1\%
+reservoir sample estimates the stream's termination mix to within a percentage point, and a
+117~KB Bloom filter tracks every new player.
 \end{abstract}
 
 %------------------------------------------------------------------
@@ -61,11 +62,11 @@ The objectives, mapped to the assignment parts, are:
 \item \textbf{B} --- load the data with RDDs and apply transformations and actions;
 \item \textbf{C} --- build DataFrames, clean, query, and use Spark SQL;
 \item \textbf{D} --- document an Input$\rightarrow$RDD$\rightarrow$DataFrame$\rightarrow$Output workflow;
-\item \textbf{E} --- simulate a stream, process incoming records, and aggregate per batch;
-\item \textbf{F} --- consolidate everything in this report.
+\item \textbf{E} --- simulate a stream, process incoming records, and aggregate per batch (here also a Kafka stream and a live feed);
+\item \textbf{F} --- consolidate everything in this report, extended with a cluster scaling study (Section~\ref{sec:cluster}).
 \end{itemize}
 All code, results and figures are in the accompanying repository
-(\texttt{src/}, \texttt{results/}, \texttt{figures/}).
+(\texttt{src/}, \texttt{results/}, \texttt{figures/}); \texttt{scripts/run\_all.sh} reproduces every result.
 
 %------------------------------------------------------------------
 \section{Dataset Description}
@@ -79,7 +80,7 @@ spans 31 Dec 2013 -- 28 Feb 2014.
 \textbf{Preparation.} PGN is a multi-line text format that Spark cannot split into records
 natively, so \texttt{src/parse\_pgn.py} streams the compressed file, extracts tags,
 strips comments and move numbers, and writes one CSV row per game. The two months were
-merged and de-duplicated on game id, giving the \textbf{1,389,994-row, 533~MB} table
+merged and de-duplicated on game id (no id occurred twice), giving the \textbf{1,389,994-row, 559~MB} table
 used throughout (the requirement was at least 10k).
 
 \begin{table}[H]\centering\small
@@ -111,10 +112,13 @@ are of exactly this kind.
 
 %------------------------------------------------------------------
 \section{Spark Architecture and Environment}
-\textbf{Environment.} Python 3.11, PySpark 3.5.3, OpenJDK 17, Windows 11, run in
-\emph{local mode} (\texttt{local[*]}, 24 logical cores, 6~GB driver memory).
-Local mode runs every component inside one JVM but uses the same APIs and execution
-model as a cluster, so the code scales out unchanged.
+\textbf{Environment.} Python 3.11.11, PySpark 3.5.3, OpenJDK 17 and Kafka 3.9.1 on Ubuntu
+20.04 under WSL2 (Windows 11 host, Intel Core i9-13900H, 20 logical cores, 16~GB given to
+Linux). Parts B--E run in \emph{local mode} (\texttt{local[*]}, 6~GB driver memory), which runs
+every component inside one JVM but uses the same APIs and execution model as a cluster;
+Section~\ref{sec:cluster} runs the same code on a Spark Standalone cluster. We moved from
+native Windows to Linux because Structured Streaming's checkpoints need Hadoop native
+libraries that Windows lacks; on Linux everything runs without workarounds.
 
 \begin{figure}[H]\centering
 \begin{tikzpicture}[font=\small,
@@ -132,8 +136,9 @@ model as a cluster, so the code scales out unchanged.
 \draw[arr] (drv) |- node[near start,left,align=right]{3.\ ship tasks\\(DAG stages)} (e1.west);
 \draw[arr] (e1) -- (st); \draw[arr] (e2) -- (st); \draw[arr] (e3) -- (st);
 \end{tikzpicture}
-\caption{Spark architecture. In this project the driver and executors are threads of one
-local JVM; the cluster manager is Spark's built-in local scheduler.}
+\caption{Spark architecture. In local mode (Parts B--E) the driver and executors are threads
+of one JVM and the cluster manager is Spark's local scheduler; in Section~\ref{sec:cluster}
+the Standalone master is the cluster manager and every executor is its own JVM.}
 \end{figure}
 
 \textbf{Components.}
@@ -146,7 +151,7 @@ The \emph{cluster manager} allocates executors (local scheduler here).
 the lineage; (3)~an \emph{action} (\texttt{count}, \texttt{collect}, \texttt{takeOrdered})
 triggers a \emph{job}; (4)~the job is split into stages at wide dependencies
 (\texttt{reduceByKey}, \texttt{groupBy}); (5)~each stage runs one task per partition;
-(6)~results return to the driver. The 558~MB CSV was read as 24 partitions.
+(6)~results return to the driver. The 559~MB CSV was read as 24 partitions.
 The \texttt{part\_d\_pipeline.py} run triggered 7 jobs.
 
 \textbf{APIs.} We use all three levels: the low-level RDD API (Section~\ref{sec:rdd}),
@@ -166,7 +171,7 @@ move_freq = (rows.flatMap(lambda r: r[15].split())                # flatMap: wor
 players = rows.flatMap(lambda r: [(r[1],1),(r[2],1)]).reduceByKey(add)
 \end{lstlisting}
 Actions used: \texttt{count}, \texttt{sum}, \texttt{takeOrdered}, \texttt{collectAsMap}.
-The full job set took 275 s on one laptop; the RDD is cached after parsing.
+The full job set took 46.6~s; the RDD is cached after parsing.
 
 \begin{table}[H]\centering\small
 \caption{RDD results over all 1,389,994 raw games.}
@@ -185,7 +190,7 @@ Termination & Normal 931,572; Time forfeit 458,266; Rules infraction 156\\
 5 percentage points more often than black. Move counts are heavy-tailed: a few
 tokens dominate, and a few players contribute thousands of games each
 (the 15 most active players alone fill 57,606 of the 2.78M player slots, 2.1\%, although
-there are 36,666 players). Such skewed keys are what 	exttt{reduceByKey}'s map-side
+there are 36,666 players). Such skewed keys are what \texttt{reduceByKey}'s map-side
 combining is designed for.
 
 %------------------------------------------------------------------
@@ -295,10 +300,10 @@ workflow; Figure~\ref{fig:wf} shows it with the measured wall time of every stag
 \begin{tikzpicture}[font=\footnotesize,node distance=0.55cm,
   st/.style={draw,rounded corners,align=center,minimum width=2.9cm,minimum height=1.35cm,fill=gray!8},
   arr/.style={-{Stealth},thick}]
-\node[st,fill=green!12] (in) {\textbf{Input data}\\lichess\_games.csv\\1,389,994 rows\\\emph{count: 14.3 s}};
-\node[st,right=of in,fill=sparkorange!20] (rdd) {\textbf{RDD processing}\\textFile $\rightarrow$ filter\\$\rightarrow$ map(parse+validate)\\cache; \emph{27.8 s}};
-\node[st,right=of rdd,fill=blue1!15] (df) {\textbf{DataFrame}\\createDataFrame\\(schema), cache\\\emph{2.6 + 15.5 s}};
-\node[st,right=of df,fill=yellow!20] (out) {\textbf{Analytical output}\\groupBy / agg /\\orderBy $\rightarrow$ CSV\\\emph{3.0 s}};
+\node[st,fill=green!12] (in) {\textbf{Input data}\\lichess\_games.csv\\1,389,994 rows\\\emph{count: 4.8 s}};
+\node[st,right=of in,fill=sparkorange!20] (rdd) {\textbf{RDD processing}\\textFile $\rightarrow$ filter\\$\rightarrow$ map(parse+validate)\\cache; \emph{6.4 s}};
+\node[st,right=of rdd,fill=blue1!15] (df) {\textbf{DataFrame}\\createDataFrame\\(schema), cache\\\emph{4.5 + 7.2 s}};
+\node[st,right=of df,fill=yellow!20] (out) {\textbf{Analytical output}\\groupBy / agg /\\orderBy $\rightarrow$ CSV\\\emph{3.4 s}};
 \draw[arr] (in)--(rdd); \draw[arr] (rdd)--(df); \draw[arr] (df)--(out);
 \node[below=0.35cm of rdd,xshift=1.5cm,align=center,text width=8cm] {1,385,456 rows survive RDD validation (4,538 rows dropped); 24 partitions; 7 Spark jobs in total};
 \end{tikzpicture}
@@ -309,95 +314,236 @@ The pipeline's output is the ten opening/time-control combinations (at least 500
 with the highest white score: Barnes Defense in blitz (0.851, 583 games) and
 King's Knight Opening in bullet (0.734) lead; such lines are mostly played at lower
 ratings (mean 1328 for the Barnes Defense games), where one-sided results are common. The dataflow shows the usual Spark trade-off:
-the RDD stage is the most expensive because Python lambdas and the \texttt{csv} module run
-row by row, while DataFrame operations (3.0 s over 1.39M rows) run in the JVM with
+the expensive steps are the ones that touch Python objects. Parsing in the RDD stage
+(6.4~s) runs the \texttt{csv} module row by row, and turning the RDD into a DataFrame
+(4.5 + 7.2~s) serialises 1.39M Python tuples into the JVM. Once the data is a cached
+DataFrame, the whole analysis takes 3.4~s, because it runs in the JVM with
 Catalyst-optimised physical plans (\texttt{HashAggregate} $\rightarrow$ \texttt{Exchange}
 $\rightarrow$ \texttt{HashAggregate} with a partial aggregation before the shuffle).
 
 %------------------------------------------------------------------
 \section{Streaming (Part E)}\label{sec:stream}
-\textbf{Stream source.} A producer thread acts as the Lichess game feed: it listens on a
-local TCP socket and pushes one burst of 10,000 tab-separated game records every
-3 seconds, 20 bursts in total (200,000 games, 20$\times$ the required 10k).
+Part E was implemented three times, each step closer to a production stream:
+(i)~a socket feed processed with both the classic DStream API and Structured Streaming,
+(ii)~a Kafka topic carrying 200,000 replayed games with their original timestamps, and
+(iii)~a Kafka topic fed \emph{live} by games finishing on lichess.org.
+All three ran on Linux (WSL2), where Structured Streaming's checkpointing works natively.
+
+\subsection{Socket feed: DStream and Structured Streaming}
+\textbf{Source.} A producer thread acts as the Lichess game feed: it listens on a local TCP
+socket and pushes one burst of 10,000 tab-separated game records every 3 seconds,
+20 bursts in total (200,000 games, 20$\times$ the required 10k).
 
 \textbf{Processing.} Spark cuts the feed into 3-second micro-batches. For every batch we
-(i)~\emph{count the records} and summarise white/black wins, draws and mean rating,
-(ii)~keep running totals per termination type (stateful aggregation), and
-(iii)~compute a sliding 9-second window count per termination type
-(\texttt{reduceByKeyAndWindow}).
+(i)~\emph{count the records} and summarise white/black wins, draws and mean rating, and
+(ii)~keep running totals per termination type (stateful aggregation). The DStream job
+(\texttt{part\_e\_streaming.py}) also keeps a sliding 9-second window per termination type
+(\texttt{reduceByKeyAndWindow}); the Structured Streaming job
+(\texttt{part\_e\_structured\_streaming.py}) uses \texttt{foreachBatch} for (i) and a
+complete-mode \texttt{groupBy} for (ii). Each Structured Streaming query opens its own socket
+connection, so the producer waits for both queries and sends every burst to each.
 
 \begin{table}[H]\centering\small
-\caption{Selected micro-batches (all 19 are in \texttt{results/e\_stream\_batches.csv}).}
+\caption{Selected micro-batches of the socket feed. Both APIs produced identical numbers for
+all 20 batches (\texttt{results/e\_stream\_batches.csv}, \texttt{results/e\_ss\_batches.csv}).}
 \begin{tabular}{@{}rrrrrr@{}}\toprule
 Batch & Records & White wins & Black wins & Draws & Mean rating\\\midrule
 1 & 10,000 & 5,199 & 4,482 & 319 & 1628.0\\
 2 & 10,000 & 5,072 & 4,599 & 329 & 1628.5\\
 9 & 10,000 & 5,169 & 4,536 & 295 & 1591.0\\
-18 & 20,000 & 10,222 & 9,210 & 568 & 1614.5\\
-19 & 10,000 & 5,132 & 4,585 & 283 & 1615.1\\\midrule
-\textbf{Total (19 batches)} & \textbf{200,000} & & & &\\\bottomrule
+18 & 10,000 & 5,113 & 4,588 & 299 & 1609.4\\
+20 & 10,000 & 5,132 & 4,585 & 283 & 1615.1\\\midrule
+\textbf{Total (20 batches)} & \textbf{200,000} & & & &\\\bottomrule
 \end{tabular}\end{table}
 
 \begin{figure}[H]\centering
-\includegraphics[width=0.49\linewidth]{stream_batches}\hfill
+\includegraphics[width=0.49\linewidth]{ss_batches}\hfill
 \includegraphics[width=0.49\linewidth]{stream_running}
-\caption{Left: records counted per micro-batch. Right: running totals by termination type;
-after 200,000 games: Normal 134,978, Time forfeit 64,968, Rules infraction 54.}
+\caption{Left: records counted per Structured Streaming micro-batch. Right: running totals by
+termination type; after 200,000 games: Normal 134,978, Time forfeit 64,968, Rules infraction 54.}
 \end{figure}
 
-\textbf{Results.} All 200,000 records were processed with none lost. Per-batch statistics are
-stable (white wins 50.7--52.7\%, mean rating 1591--1630), because the replay order is
-chronological; the running termination mix converges to 67.5\% Normal / 32.5\% Time forfeit,
-matching the 1.39M-game figures of Section~\ref{sec:df} closely (67.0\% / 33.0\%), an
-illustration of how a stream sample estimates the whole. Batches completed about
-9--10~s apart instead of 3~s: processing took longer than the batch interval on this
-4-thread local setup (one thread is occupied by the receiver), so bursts queued in the socket
-buffer and batch~18 contains two bursts. This is back-pressure; more executors would
-mitigate it.
+\textbf{Results.} Both APIs processed all 200,000 records in 20 non-empty batches spaced
+3~s apart, with none lost (wall time 77.0~s DStream, 76.3~s Structured Streaming).
+Per-batch statistics are stable (white wins 50.7--52.7\%, mean rating 1591--1630) because
+the replay order is chronological; the running termination mix converges to
+67.5\% Normal / 32.5\% Time forfeit, close to the 1.39M-game figures of
+Section~\ref{sec:df} (67.0\% / 33.0\%). When the producer closes the socket, the DStream
+receiver logs reconnection errors while the last batches drain; these are expected and
+lose no data. The socket source keeps no replayable log, however: a record that arrives
+while a query is down is gone. Kafka fixes that.
 
-\textbf{Honest limitation: Structured Streaming.} The assignment names Structured Streaming.
-We wrote it (\texttt{part\_e\_structured\_streaming.py}: socket source, \texttt{foreachBatch}
-per-batch aggregation, a complete-mode running aggregate) but \textbf{could not run it}:
-every Structured Streaming query creates checkpoint directories through Hadoop's file
-system layer, which on Windows needs the native \texttt{winutils.exe} and \texttt{hadoop.dll};
-only the former could be emulated locally. The reported results therefore come from the
-equivalent classic Spark Streaming (DStream) micro-batch API, which needs no checkpoint
-for these operations. The conceptual model is the same (an unbounded table processed in
-micro-batches); the Structured version should run unchanged on Linux, WSL or Docker.
+\subsection{Kafka: a replayable stream with event time}
+\begin{figure}[H]\centering
+\begin{tikzpicture}[font=\footnotesize,node distance=0.5cm,
+  st/.style={draw,rounded corners,align=center,minimum height=1.3cm,fill=gray!8},
+  arr/.style={-{Stealth},thick}]
+\node[st,fill=green!12,text width=3.0cm] (src) {\textbf{stream\_producer.py}\\replay: 2014 CSV at a fixed rate\\live: lichess.org API};
+\node[st,right=of src,fill=yellow!20,text width=2.4cm] (k) {\textbf{Kafka topic}\\4 partitions\\(KRaft broker)};
+\node[st,right=of k,fill=sparkorange!20,text width=5.6cm,align=left] (sp) {\textbf{Structured Streaming} (\texttt{part\_e\_kafka\_streaming.py})\\
+q1 per batch: counts, reservoir sample, Bloom filter\\
+q2 event-time windows + watermark\\
+q3 running totals (complete mode)};
+\draw[arr] (src)--node[above]{JSON}(k); \draw[arr] (k)--node[above,align=center]{$\le$10k\\/batch}(sp);
+\end{tikzpicture}
+\caption{The Kafka pipeline. Three independent queries read the same topic.}\label{fig:kafka}
+\end{figure}
 
-\textbf{Sampling and filtering in a stream.} The stream here is the sequence of games as
-they finish. Filtering is done on the fly (malformed lines are dropped in
-\texttt{filter}); sampling (e.g.\ every $k$-th game or a reservoir of fixed size) would let
-a downstream consumer maintain estimates such as the termination mix with constant memory.
+\textbf{Back-pressure.} The replay producer published the same 200,000 games as one JSON
+message each, at 4,000 games/s (all sent in 50~s). Spark read the topic with
+\texttt{maxOffsetsPerTrigger}~=~10,000 and a 3-second trigger, so the burst waited in Kafka
+instead of overloading a batch: 21 batches of at most 10,000 records, a mean batch time of
+0.46~s, and about 25,000 rows/s processed while a batch ran. All 200,000 records arrived; the
+final running totals equal those of the socket runs exactly.
+
+\textbf{Event time and watermark.} Every message carries the game's real UTC start time.
+Query q2 counts games per one-hour \emph{event-time} window and time-control category, with a
+two-hour watermark so that Spark can finalise old windows and drop their state. The replay
+covered 31~December 2013 to 10~January 2014 and produced 907 window rows; no record was later than the watermark,
+because the dump is in time order (Figure~\ref{fig:kwin}). The daily cycle of
+Section~\ref{sec:df} reappears, now computed incrementally by a stream.
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.49\linewidth]{kafka_replay_batches}\hfill
+\includegraphics[width=0.49\linewidth]{kafka_replay_windows}
+\caption{Kafka replay. Left: records and processing time per micro-batch. Right: games per
+one-hour event-time window and category.}\label{fig:kwin}
+\end{figure}
+
+\textbf{Sampling and filtering in the stream.} Two stream-mining structures are kept across
+batches. \emph{Sampling:} every record gets a random key and the 2,000 records with the
+smallest keys seen so far are kept (bottom-$k$ sampling, equivalent to a reservoir sample),
+so memory stays constant however long the stream runs. \emph{Filtering:} a Bloom filter
+($m$~=~958,505 bits, $k$~=~7 hash functions by double hashing, sized for 100,000 players at a
+1\% false-positive rate) answers ``has this player been seen before?'' for every player in
+every batch.
+
+\begin{table}[H]\centering\small
+\caption{Stream mining on the 200,000-game Kafka replay.}
+\begin{tabular}{@{}lrr@{}}\toprule
+Quantity & Estimate & Exact\\\midrule
+Normal / Time forfeit share (2,000-game sample) & 68.2\% / 31.8\% & 67.5\% / 32.5\%\\
+Distinct players (sum of Bloom ``new'' answers) & 11,607 & 11,607\\\bottomrule
+\end{tabular}\end{table}
+
+The 1\% sample estimates the termination mix to within 0.7 percentage points. The Bloom filter made no false-positive error here, because 11,607 players fill only 12\% of its design capacity; its memory is fixed at 117~KB, whereas an exact set grows with every new player.
+
+\subsection{Live lichess.org feed}
+In live mode the producer asks the public Lichess API for the games currently on its TV
+channels (\texttt{/api/tv/\{channel\}}, up to 30 standard games for each of six channels),
+follows them with \texttt{/api/stream/games/\{id\}}, and publishes each game to Kafka the
+moment it ends (mate, resignation, draw, or time-out; aborted games are skipped). The list
+is refreshed every minute. The Spark job is unchanged except for one-minute windows, a
+two-minute watermark and a 5-second trigger.
+
+\begin{table}[H]\centering\small
+\caption{Live run, 2026-11-22, 08:55--09:05 UTC: games finished on lichess.org,
+by category (\texttt{results/e\_kafka\_live\_*.csv}).}
+\begin{tabular}{@{}lrrr@{}}\toprule
+Category & Games & Share & Mean rating\\\midrule
+Bullet & 210 & 87.1\% & 2455\\
+Blitz & 18 & 7.5\% & 2501\\
+Rapid & 8 & 3.3\% & 2168\\
+Classical & 5 & 2.1\% & 1765\\\midrule
+\textbf{Total} & \textbf{241} & & \\\bottomrule
+\end{tabular}\end{table}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.7\linewidth]{kafka_live_windows}
+\caption{Live feed: games finished per one-minute event-time window.}
+\end{figure}
+
+\textbf{Results.} In the 10-minute run 241 real games ended on the followed channels, about
+24 per minute, and every one was processed (97 non-empty batches,
+0 records dropped by the watermark). 47.7\% ended on the clock,
+against 33\% in the 2014 data, and the mean rating is far higher: Lichess TV shows the strongest players in
+fast games, so this sample is not representative of all of Lichess. The point is the pipeline. The same
+producer, topic and Spark job handle historic and live data, and the Bloom filter and sample run unchanged
+(246 distinct players, sample of 200 games).
+
+%------------------------------------------------------------------
+\section{Scaling on a Spark Standalone Cluster}\label{sec:cluster}
+Parts B--E run in local mode, where the driver and executors are threads of one JVM. To see
+how the work spreads over executors, we started a Spark Standalone cluster: one master and
+eight worker processes (2 cores and 1.6~GB each), every one a separate JVM that talks to the
+master and to the others over the network, as on a multi-machine cluster.
+\texttt{part\_f\_cluster\_benchmark.py} then runs the same two jobs over the full 1.39M-game
+CSV with 1, 2, 4 and 8 executors (\texttt{spark.cores.max}); each time is the best of two runs.
+The \emph{RDD job} parses every line in Python and counts move tokens and openings
+(\texttt{flatMap}, \texttt{reduceByKey}); the \emph{DataFrame job} reads with a schema, casts
+and cleans, groups by opening and time control, and explodes the move text into tokens.
+
+\begin{table}[H]\centering\small
+\caption{Wall time on the Standalone cluster (best of two runs; all runs in
+\texttt{results/f\_cluster\_benchmark\_runs.csv}). Speed-up is relative to one executor.}
+\begin{tabular}{@{}rrrrrr@{}}\toprule
+Executors & Cores & RDD job (s) & Speed-up & DataFrame job (s) & Speed-up\\\midrule
+1 & 2 & 28.0 & 1.00 & 5.9 & 1.00\\
+2 & 4 & 14.5 & 1.93 & 3.8 & 1.55\\
+4 & 8 & 9.2 & 3.04 & 2.4 & 2.46\\
+8 & 16 & 7.6 & 3.68 & 2.4 & 2.46\\\bottomrule
+\end{tabular}\end{table}
+
+\begin{figure}[H]\centering
+\includegraphics[width=0.8\linewidth]{cluster_scaling}
+\caption{Scaling with the number of executors (2 cores each). The dashed line is ideal linear speed-up.}
+\end{figure}
+
+\textbf{Observations.} The RDD job, which spends its time in per-row Python code, scales
+almost perfectly from one to two executors (1.93$\times$, 96\% efficiency) and reaches
+3.7$\times$ on eight. The DataFrame job is already 4.7$\times$ faster than the RDD job on a
+single executor and stops improving after four: with only 2.4~s of work left, the fixed costs
+of scheduling, the shuffle and reading one 559~MB file from one disk dominate (Amdahl's law).
+The last doubling also gains less because 16 executor cores share a 20-thread laptop with the
+driver and the operating system, and 8 of its 14 physical cores are slower efficiency cores.
+The first run of each configuration was slower (JVM warm-up and a cold file cache), which is
+why the best of two runs is reported.
 
 %------------------------------------------------------------------
 \section{Results and Discussion}
 \begin{itemize}\itemsep1pt
-\item \textbf{Scale.} 1.39M games / 93.3M tokens processed locally; RDD jobs in minutes,
-DataFrame queries in seconds. The RDD jobs took minutes and the DataFrame stage seconds
-(not a like-for-like comparison, but consistent with JVM-side execution and
-Catalyst's partial aggregation versus per-row Python lambdas).
+\item \textbf{Scale.} 1.39M games / 93.3M tokens processed on one laptop: the full RDD job
+set in 46.6~s, all DataFrame and SQL queries in 37.7~s, and a 200,000-record stream in under
+90~s with every API. On the Standalone cluster the Python-heavy RDD job ran 3.7$\times$ faster with eight executors than with one, while the much cheaper DataFrame job stopped scaling at four.
 \item \textbf{Domain insights.} White advantage $\approx$2.5 points; time controls change
 how games end (57\% clock losses in bullet); strength reduces blunders (longer games, more
 draws); Elo-predicted upset rates hold across 1.39M games; a strong diurnal cycle with a 4$\times$
 peak-to-trough ratio.
+\item \textbf{Streaming.} DStream, Structured Streaming over a socket, and Structured
+Streaming over Kafka give identical counts. Kafka adds what a socket lacks: a replayable log,
+rate limiting (\texttt{maxOffsetsPerTrigger}), and event-time windows with a watermark.
+A 1\% sample and a 117~KB Bloom filter answer stream questions with fixed memory.
 \item \textbf{Data quality.} 0.33\% of rows needed removal, mostly correspondence games
 without a clock.
-\item \textbf{Limits.} Local mode only (no multi-node speed-up measured); two months of
-2014 data, so statements concern early-Lichess, not modern play; ratings are from the
-platform's own system; the streaming results come from the DStream API (Section~\ref{sec:stream}).
+\item \textbf{Limits.} The cluster is eight worker processes on one machine, so it shares
+memory bandwidth and disk and has no real network between nodes; the data covers two
+months of 2014 (early Lichess, not modern play); the live feed only sees the high-rated games
+shown on Lichess TV.
 \end{itemize}
 
 %------------------------------------------------------------------
-\section{Conclusion}
+\section{Conclusion and Future Scope}
 We built and executed an end-to-end Spark pipeline over 1.39 million real chess games:
 architecture and environment (A), RDD transformations and actions (B), DataFrame cleaning,
-aggregation and SQL (C), a measured RDD$\rightarrow$DataFrame workflow (D), and a
-200,000-record micro-batch stream with per-batch, running and windowed aggregation (E). The
-analysis recovered known chess regularities from data alone, which also validates the
-pipeline. The remaining gap is running the Structured Streaming script on a platform with
-Hadoop native support and benchmarking on a multi-node cluster; both are mechanical
-given the code provided.
+aggregation and SQL (C), a measured RDD$\rightarrow$DataFrame workflow (D), and streaming (E)
+with DStreams, Structured Streaming, a Kafka topic with event-time windows, stream sampling and
+a Bloom filter, and a live feed from lichess.org. A Standalone cluster run showed how the same
+jobs scale with executors. The analysis recovered known chess regularities from data alone,
+which also validates the pipeline. Every number in this report comes from the files in
+\texttt{results/}, produced by \texttt{scripts/run\_all.sh}.
+
+\textbf{Future scope.}
+\begin{itemize}\itemsep0pt
+\item Run the cluster on several physical machines (or a cloud service) with the data on
+HDFS or S3, to measure network shuffle costs that a one-host cluster cannot show.
+\item Add more months (Lichess publishes every month since 2013) and store them as Parquet
+partitioned by month, so queries read only the columns and months they need.
+\item Apply the course's mining methods at scale: MinHash LSH on move shingles to find
+near-identical games, PageRank on the player graph, FP-Growth on move sequences, and ALS to
+recommend openings to players.
+\item Use Spark MLlib to predict game results from ratings, opening and time control, and
+compare the model with the Elo expected score.
+\end{itemize}
 
 \section*{References}
 \begin{small}\begin{enumerate}\itemsep1pt
@@ -413,5 +559,14 @@ Scale.} SOSP 2013.
 Clusters.} OSDI 2004.
 \item A.~Elo. \emph{The Rating of Chessplayers, Past and Present.} Arco, 1978.
 \item Apache Spark documentation, version 3.5. \url{https://spark.apache.org/docs/3.5.3/}
+\item J.~Kreps, N.~Narkhede and J.~Rao. \emph{Kafka: a Distributed Messaging System for Log
+Processing.} NetDB 2011.
+\item B.~H.~Bloom. \emph{Space/Time Trade-offs in Hash Coding with Allowable Errors.}
+Communications of the ACM 13(7), 1970.
+\item J.~S.~Vitter. \emph{Random Sampling with a Reservoir.} ACM Transactions on Mathematical
+Software 11(1), 1985.
+\item J.~Leskovec, A.~Rajaraman and J.~D.~Ullman. \emph{Mining of Massive Datasets}, 3rd ed.
+Cambridge University Press, 2020 (Ch.~4, Mining Data Streams).
+\item Lichess API documentation. \url{https://lichess.org/api}
 \end{enumerate}\end{small}
 \end{document}

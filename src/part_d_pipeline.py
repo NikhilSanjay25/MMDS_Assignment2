@@ -6,7 +6,7 @@ import time
 from pyspark.sql import functions as F
 from pyspark.sql.types import (DoubleType, IntegerType, StringType, StructField, StructType)
 
-from common import DATA, RESULTS, get_spark, save
+from common import DATA, RESULTS, environment, get_spark
 
 spark = get_spark("PartD-Pipeline")
 sc = spark.sparkContext
@@ -66,6 +66,7 @@ print(out.to_string())
 jobs = sc.statusTracker().getJobIdsForGroup()
 meta = {"rows_in": n_in, "rows_after_rdd_cleaning": n_rdd, "stage_seconds": stages,
         "spark_jobs_run": len(jobs), "rdd_partitions": rdd.getNumPartitions(),
+        "environment": environment(),
         "df_plan": df.groupBy("category").count()._jdf.queryExecution().simpleString()[:600]}
 with open(f"{RESULTS}/part_d_pipeline.json", "w") as f:
     json.dump(meta, f, indent=2)

@@ -1,0 +1,76 @@
+your 131072x1 screen size is bogus. expect trouble
+26/11/22 08:53:11 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+BATCH   1 records=  8000 total=   8000 W/B/D=4148/3599/253 rating=1626.6 new players bloom/exact=2375/2375
+BATCH   2 records=  9998 total=  17998 W/B/D=5137/4534/327 rating=1628.9 new players bloom/exact=1409/1409
+BATCH   3 records=  9998 total=  27996 W/B/D=5178/4530/290 rating=1615.4 new players bloom/exact=912/912
+BATCH   4 records=  9998 total=  37994 W/B/D=5084/4570/344 rating=1621.1 new players bloom/exact=746/746
+BATCH   5 records=  9999 total=  47993 W/B/D=5065/4602/332 rating=1623.0 new players bloom/exact=648/648
+BATCH   6 records=  9999 total=  57992 W/B/D=5152/4506/341 rating=1628.4 new players bloom/exact=513/513
+BATCH   7 records=  9998 total=  67990 W/B/D=5117/4588/293 rating=1593.0 new players bloom/exact=516/516
+BATCH   8 records=  9998 total=  77988 W/B/D=5101/4583/314 rating=1615.8 new players bloom/exact=454/454
+BATCH   9 records=  9997 total=  87985 W/B/D=5116/4583/298 rating=1592.8 new players bloom/exact=427/427
+BATCH  10 records=  9998 total=  97983 W/B/D=5158/4543/297 rating=1611.5 new players bloom/exact=371/371
+BATCH  11 records=  9998 total= 107981 W/B/D=5134/4576/288 rating=1618.8 new players bloom/exact=330/330
+BATCH  12 records=  9998 total= 117979 W/B/D=5247/4462/289 rating=1599.0 new players bloom/exact=382/382
+BATCH  13 records=  9998 total= 127977 W/B/D=5214/4479/305 rating=1623.1 new players bloom/exact=332/332
+BATCH  14 records=  9998 total= 137975 W/B/D=5107/4566/325 rating=1615.3 new players bloom/exact=319/319
+BATCH  15 records=  9998 total= 147973 W/B/D=5158/4551/289 rating=1615.3 new players bloom/exact=283/283
+BATCH  16 records=  9998 total= 157971 W/B/D=5158/4539/301 rating=1607.0 new players bloom/exact=349/349
+BATCH  17 records=  9998 total= 167969 W/B/D=5047/4601/350 rating=1611.6 new players bloom/exact=300/300
+BATCH  18 records=  9998 total= 177967 W/B/D=5190/4519/289 rating=1603.6 new players bloom/exact=304/304
+BATCH  19 records=  9998 total= 187965 W/B/D=5086/4630/282 rating=1620.2 new players bloom/exact=299/299
+BATCH  20 records=  9998 total= 197963 W/B/D=5091/4624/283 rating=1618.3 new players bloom/exact=287/287
+BATCH  21 records=  2037 total= 200000 W/B/D=1070/912/55 rating=1611.5 new players bloom/exact=51/51
+{
+  "api": "Structured Streaming, Kafka source",
+  "mode": "replay",
+  "topic": "lichess-replay",
+  "trigger_seconds": 3,
+  "max_offsets_per_trigger": 10000,
+  "window": "1 hour",
+  "watermark": "2 hours",
+  "non_empty_batches": 21,
+  "records_processed": 200000,
+  "running_totals_final": {
+    "Normal": 134978,
+    "Rules infraction": 54,
+    "Time forfeit": 64968
+  },
+  "event_time_range": [
+    "2013-12-31 23:00:03",
+    "2014-01-10 09:02:23"
+  ],
+  "windows_emitted": 907,
+  "rows_dropped_by_watermark": 0,
+  "mean_batch_ms": 458.1,
+  "mean_processed_rows_per_sec": 25404.0,
+  "sampling": {
+    "sample_size": 2000,
+    "termination_mix_sample": {
+      "Normal": 0.6815,
+      "Time forfeit": 0.3175,
+      "Rules infraction": 0.001
+    },
+    "termination_mix_full_stream": {
+      "Normal": 0.6749,
+      "Rules infraction": 0.0003,
+      "Time forfeit": 0.3248
+    }
+  },
+  "filtering": {
+    "bloom_bits": 958505,
+    "bloom_hashes": 7,
+    "distinct_players_exact": 11607,
+    "distinct_players_bloom": 11607
+  },
+  "wall_seconds": 85.4,
+  "environment": {
+    "python": "3.11.11",
+    "pyspark": "3.5.3",
+    "os": "Linux 5.15.167.4-microsoft-standard-WSL2",
+    "cpus": 20,
+    "master": "local[*]"
+  }
+}

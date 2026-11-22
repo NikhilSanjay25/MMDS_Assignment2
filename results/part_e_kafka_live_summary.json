@@ -1,0 +1,48 @@
+{
+  "api": "Structured Streaming, Kafka source",
+  "mode": "live",
+  "topic": "lichess-live",
+  "trigger_seconds": 5,
+  "max_offsets_per_trigger": 1000,
+  "window": "1 minute",
+  "watermark": "2 minutes",
+  "non_empty_batches": 97,
+  "records_processed": 241,
+  "running_totals_final": {
+    "Normal": 126,
+    "Time forfeit": 115
+  },
+  "event_time_range": [
+    "2026-11-22 08:55:07.317219",
+    "2026-11-22 09:05:09.889174"
+  ],
+  "windows_emitted": 29,
+  "rows_dropped_by_watermark": 0,
+  "mean_batch_ms": 683.7,
+  "mean_processed_rows_per_sec": 3.6,
+  "sampling": {
+    "sample_size": 200,
+    "termination_mix_sample": {
+      "Normal": 0.53,
+      "Time forfeit": 0.47
+    },
+    "termination_mix_full_stream": {
+      "Normal": 0.5228,
+      "Time forfeit": 0.4772
+    }
+  },
+  "filtering": {
+    "bloom_bits": 958505,
+    "bloom_hashes": 7,
+    "distinct_players_exact": 246,
+    "distinct_players_bloom": 246
+  },
+  "wall_seconds": 641.4,
+  "environment": {
+    "python": "3.11.11",
+    "pyspark": "3.5.3",
+    "os": "Linux 5.15.167.4-microsoft-standard-WSL2",
+    "cpus": 20,
+    "master": "local[*]"
+  }
+}

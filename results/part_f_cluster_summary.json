@@ -1,0 +1,81 @@
+{
+  "master": "spark://localhost:7077",
+  "cores_per_executor": 2,
+  "executor_memory": "1400m",
+  "repeats": 2,
+  "metric": "best of repeats, wall seconds",
+  "results": [
+    {
+      "executors": 1,
+      "cores": 2,
+      "job": "df",
+      "seconds": 5.9,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "executors": 1,
+      "cores": 2,
+      "job": "rdd",
+      "seconds": 28.0,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "executors": 2,
+      "cores": 4,
+      "job": "df",
+      "seconds": 3.8,
+      "speedup": 1.55,
+      "efficiency": 0.78
+    },
+    {
+      "executors": 2,
+      "cores": 4,
+      "job": "rdd",
+      "seconds": 14.5,
+      "speedup": 1.93,
+      "efficiency": 0.96
+    },
+    {
+      "executors": 4,
+      "cores": 8,
+      "job": "df",
+      "seconds": 2.4,
+      "speedup": 2.46,
+      "efficiency": 0.62
+    },
+    {
+      "executors": 4,
+      "cores": 8,
+      "job": "rdd",
+      "seconds": 9.2,
+      "speedup": 3.04,
+      "efficiency": 0.76
+    },
+    {
+      "executors": 8,
+      "cores": 16,
+      "job": "df",
+      "seconds": 2.4,
+      "speedup": 2.46,
+      "efficiency": 0.31
+    },
+    {
+      "executors": 8,
+      "cores": 16,
+      "job": "rdd",
+      "seconds": 7.6,
+      "speedup": 3.68,
+      "efficiency": 0.46
+    }
+  ],
+  "environment": {
+    "python": "3.11.11",
+    "pyspark": "3.5.3",
+    "os": "Linux 5.15.167.4-microsoft-standard-WSL2",
+    "cpus": 20,
+    "master": "spark://localhost:7077"
+  },
+  "note": "standalone cluster: master and workers are separate JVM processes on one host"
+}

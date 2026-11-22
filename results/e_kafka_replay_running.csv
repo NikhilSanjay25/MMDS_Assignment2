@@ -1,0 +1,53 @@
+batch_id,termination,games
+1,Normal,5230
+1,Time forfeit,2770
+2,Normal,12216
+2,Time forfeit,5782
+3,Normal,19014
+3,Time forfeit,8982
+4,Normal,25852
+4,Time forfeit,12142
+5,Normal,32397
+5,Time forfeit,15596
+6,Normal,39179
+6,Time forfeit,18813
+7,Normal,46059
+7,Time forfeit,21931
+8,Normal,52870
+8,Time forfeit,25118
+9,Normal,59637
+9,Time forfeit,28348
+10,Normal,66494
+10,Time forfeit,31489
+11,Normal,73469
+11,Time forfeit,34512
+12,Normal,80296
+12,Time forfeit,37676
+12,Rules infraction,7
+13,Normal,87135
+13,Rules infraction,32
+13,Time forfeit,40810
+14,Normal,93737
+14,Rules infraction,51
+14,Time forfeit,44187
+15,Normal,100482
+15,Rules infraction,51
+15,Time forfeit,47440
+16,Normal,107096
+16,Rules infraction,51
+16,Time forfeit,50824
+17,Normal,113787
+17,Rules infraction,51
+17,Time forfeit,54131
+18,Normal,120352
+18,Rules infraction,51
+18,Time forfeit,57564
+19,Normal,126971
+19,Rules infraction,53
+19,Time forfeit,60941
+20,Normal,133604
+20,Rules infraction,54
+20,Time forfeit,64305
+21,Normal,134978
+21,Rules infraction,54
+21,Time forfeit,64968

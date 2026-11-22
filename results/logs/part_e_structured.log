@@ -1,0 +1,66 @@
+your 131072x1 screen size is bogus. expect trouble
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/11/22 14:03:13 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+[producer] 2 queries connected
+[producer] sent burst 0 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5199, 'black_wins': 4482, 'draws': 319, 'avg_rating': 1628.0, 'batch_id': 1, 'time': '14:03:25'}
+RUNNING after batch 1 [['Normal', 6552], ['Time forfeit', 3448]]
+[producer] sent burst 1 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5072, 'black_wins': 4599, 'draws': 329, 'avg_rating': 1628.5, 'batch_id': 2, 'time': '14:03:27'}
+RUNNING after batch 2 [['Normal', 13582], ['Time forfeit', 6418]]
+[producer] sent burst 2 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5226, 'black_wins': 4482, 'draws': 292, 'avg_rating': 1612.2, 'batch_id': 3, 'time': '14:03:30'}
+RUNNING after batch 3 [['Normal', 20393], ['Time forfeit', 9607]]
+[producer] sent burst 3 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5099, 'black_wins': 4556, 'draws': 345, 'avg_rating': 1620.6, 'batch_id': 4, 'time': '14:03:33'}
+RUNNING after batch 4 [['Normal', 27145], ['Time forfeit', 12855]]
+[producer] sent burst 4 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5082, 'black_wins': 4591, 'draws': 327, 'avg_rating': 1629.5, 'batch_id': 5, 'time': '14:03:36'}
+RUNNING after batch 5 [['Normal', 33772], ['Time forfeit', 16228]]
+[producer] sent burst 5 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5129, 'black_wins': 4537, 'draws': 334, 'avg_rating': 1622.6, 'batch_id': 6, 'time': '14:03:39'}
+RUNNING after batch 6 [['Normal', 40555], ['Time forfeit', 19445]]
+[producer] sent burst 6 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5104, 'black_wins': 4602, 'draws': 294, 'avg_rating': 1592.8, 'batch_id': 7, 'time': '14:03:42'}
+RUNNING after batch 7 [['Normal', 47433], ['Time forfeit', 22567]]
+[producer] sent burst 7 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5091, 'black_wins': 4589, 'draws': 320, 'avg_rating': 1611.7, 'batch_id': 8, 'time': '14:03:45'}
+RUNNING after batch 8 [['Normal', 54242], ['Time forfeit', 25758]]
+[producer] sent burst 8 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5169, 'black_wins': 4536, 'draws': 295, 'avg_rating': 1591.0, 'batch_id': 9, 'time': '14:03:48'}
+RUNNING after batch 9 [['Normal', 61048], ['Time forfeit', 28952]]
+[producer] sent burst 9 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5100, 'black_wins': 4604, 'draws': 296, 'avg_rating': 1619.2, 'batch_id': 10, 'time': '14:03:51'}
+RUNNING after batch 10 [['Normal', 67870], ['Time forfeit', 32130]]
+[producer] sent burst 10 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5173, 'black_wins': 4556, 'draws': 271, 'avg_rating': 1611.5, 'batch_id': 11, 'time': '14:03:54'}
+RUNNING after batch 11 [['Normal', 74880], ['Time forfeit', 35120]]
+[producer] sent burst 11 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5272, 'black_wins': 4426, 'draws': 302, 'avg_rating': 1604.9, 'batch_id': 12, 'time': '14:03:57'}
+RUNNING after batch 12 [['Normal', 81699], ['Time forfeit', 38292], ['Rules infraction', 9]]
+[producer] sent burst 12 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5150, 'black_wins': 4537, 'draws': 313, 'avg_rating': 1622.3, 'batch_id': 13, 'time': '14:04:00'}
+RUNNING after batch 13 [['Normal', 88443], ['Rules infraction', 43], ['Time forfeit', 41514]]
+[producer] sent burst 13 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5191, 'black_wins': 4502, 'draws': 307, 'avg_rating': 1618.6, 'batch_id': 14, 'time': '14:04:03'}
+RUNNING after batch 14 [['Normal', 95090], ['Rules infraction', 51], ['Time forfeit', 44859]]
+[producer] sent burst 14 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5145, 'black_wins': 4569, 'draws': 286, 'avg_rating': 1609.6, 'batch_id': 15, 'time': '14:04:06'}
+RUNNING after batch 15 [['Normal', 101802], ['Rules infraction', 51], ['Time forfeit', 48147]]
+[producer] sent burst 15 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5109, 'black_wins': 4550, 'draws': 341, 'avg_rating': 1613.8, 'batch_id': 16, 'time': '14:04:09'}
+RUNNING after batch 16 [['Normal', 108424], ['Rules infraction', 51], ['Time forfeit', 51525]]
+[producer] sent burst 16 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5093, 'black_wins': 4584, 'draws': 323, 'avg_rating': 1605.1, 'batch_id': 17, 'time': '14:04:12'}
+RUNNING after batch 17 [['Normal', 115077], ['Rules infraction', 51], ['Time forfeit', 54872]]
+[producer] sent burst 17 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5113, 'black_wins': 4588, 'draws': 299, 'avg_rating': 1609.4, 'batch_id': 18, 'time': '14:04:15'}
+RUNNING after batch 18 [['Normal', 121783], ['Rules infraction', 51], ['Time forfeit', 58166]]
+[producer] sent burst 18 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5109, 'black_wins': 4622, 'draws': 269, 'avg_rating': 1619.5, 'batch_id': 19, 'time': '14:04:18'}
+RUNNING after batch 19 [['Normal', 128268], ['Rules infraction', 53], ['Time forfeit', 61679]]
+[producer] sent burst 19 (10000 games)
+BATCH {'records': 10000, 'white_wins': 5132, 'black_wins': 4585, 'draws': 283, 'avg_rating': 1615.1, 'batch_id': 20, 'time': '14:04:21'}
+RUNNING after batch 20 [['Normal', 134978], ['Rules infraction', 54], ['Time forfeit', 64968]]
+{'api': 'Structured Streaming (socket source, foreachBatch + complete-mode aggregate)', 'bursts_sent': 20, 'rows_per_burst': 10000, 'trigger_seconds': 3, 'non_empty_batches': 20, 'records_processed': 200000, 'running_totals_final': {'Normal': 134978, 'Time forfeit': 64968, 'Rules infraction': 54}, 'wall_seconds': 76.3, 'environment': {'python': '3.11.11', 'pyspark': '3.5.3', 'os': 'Linux 5.15.167.4-microsoft-standard-WSL2', 'cpus': 20, 'master': 'local[*]'}}

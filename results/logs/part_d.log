@@ -1,0 +1,36 @@
+your 131072x1 screen size is bogus. expect trouble
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/11/22 14:00:20 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+    category                                        opening  games  white_score  avg_rating
+0      Blitz                                 Barnes Defense    583       0.8508      1328.2
+1     Bullet                          King's Knight Opening    554       0.7338      1479.8
+2      Rapid                Russian Game: Damiano Variation    597       0.7169      1446.6
+3  Classical  Scandinavian Defense: Mieses-Kotroc Variation    633       0.7133      1504.9
+4      Blitz              King's Pawn Game: Damiano Defense    992       0.7102      1415.7
+5     Bullet             Queen's Pawn Game: Levitsky Attack   1048       0.7032      1639.9
+6     Bullet         Queen's Gambit Accepted: Old Variation    640       0.6938      1545.2
+7      Rapid              King's Pawn Game: Damiano Defense   2092       0.6912      1423.8
+8      Blitz                          King's Knight Opening   1393       0.6877      1489.6
+9      Rapid   King's Gambit Accepted, King's Knight Gambit   1418       0.6837      1652.4
+{
+  "rows_in": 1389994,
+  "rows_after_rdd_cleaning": 1385456,
+  "stage_seconds": {
+    "1_input_count": 4.8,
+    "2_rdd_processing": 6.4,
+    "3a_rdd_to_dataframe": 4.5,
+    "3b_dataframe_materialise": 7.2,
+    "4_analytics": 3.4
+  },
+  "spark_jobs_run": 7,
+  "rdd_partitions": 24,
+  "environment": {
+    "python": "3.11.11",
+    "pyspark": "3.5.3",
+    "os": "Linux 5.15.167.4-microsoft-standard-WSL2",
+    "cpus": 20,
+    "master": "local[*]"
+  },
+  "df_plan": "== Physical Plan ==\nAdaptiveSparkPlan isFinalPlan=false\n+- HashAggregate(keys=[category#2], functions=[count(1)])\n   +- Exchange hashpartitioning(category#2, 16), ENSURE_REQUIREMENTS, [plan_id=141]\n      +- HashAggregate(keys=[category#2], functions=[partial_count(1)])\n         +- InMemoryTableScan [category#2]\n               +- InMemoryRelation [game_id#0, opening#1, category#2, avg_elo#3, white_score#4, plies#5], StorageLevel(disk, memory, deserialized, 1 replicas)\n                     +- *(1) Scan ExistingRDD[game_id#0,opening#1,category#2,avg_elo#3,white_score#4,plies#5]\n\n"
+}

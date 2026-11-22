@@ -5,5 +5,17 @@
   "batch_interval_seconds": 3,
   "non_empty_batches": 20,
   "records_processed": 200000,
-  "wall_seconds": 76.5
+  "running_totals_final": {
+    "Time forfeit": 64968,
+    "Normal": 134978,
+    "Rules infraction": 54
+  },
+  "wall_seconds": 77.0,
+  "environment": {
+    "python": "3.11.11",
+    "pyspark": "3.5.3",
+    "os": "Linux 5.15.167.4-microsoft-standard-WSL2",
+    "cpus": 20,
+    "master": "local[*]"
+  }
 }

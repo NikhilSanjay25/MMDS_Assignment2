@@ -1,0 +1,29 @@
+your 131072x1 screen size is bogus. expect trouble
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/11/22 14:19:24 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+executors=1 cores=2 job=rdd rep=0: 29.5 s
+executors=1 cores=2 job=rdd rep=1: 28.0 s
+executors=1 cores=2 job=df rep=0: 9.0 s
+executors=1 cores=2 job=df rep=1: 5.9 s
+executors=2 cores=4 job=rdd rep=0: 15.8 s
+executors=2 cores=4 job=rdd rep=1: 14.5 s
+executors=2 cores=4 job=df rep=0: 5.0 s
+executors=2 cores=4 job=df rep=1: 3.8 s
+executors=4 cores=8 job=rdd rep=0: 11.8 s
+executors=4 cores=8 job=rdd rep=1: 9.2 s
+executors=4 cores=8 job=df rep=0: 4.9 s
+executors=4 cores=8 job=df rep=1: 2.4 s
+executors=8 cores=16 job=rdd rep=0: 12.0 s
+executors=8 cores=16 job=rdd rep=1: 7.6 s
+executors=8 cores=16 job=df rep=0: 6.6 s
+executors=8 cores=16 job=df rep=1: 2.4 s
+ executors  cores job  seconds  speedup  efficiency
+         1      2  df      5.9     1.00        1.00
+         1      2 rdd     28.0     1.00        1.00
+         2      4  df      3.8     1.55        0.78
+         2      4 rdd     14.5     1.93        0.96
+         4      8  df      2.4     2.46        0.62
+         4      8 rdd      9.2     3.04        0.76
+         8     16  df      2.4     2.46        0.31
+         8     16 rdd      7.6     3.68        0.46

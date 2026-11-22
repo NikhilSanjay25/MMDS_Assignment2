@@ -7,9 +7,8 @@ Spark Streaming cuts the feed into 3-second micro-batches and, for every batch,
   * updates running totals per termination type                    (stateful, kept on the driver)
   * keeps a sliding 9-second window of records per termination     (windowed aggregation)
 
-part_e_structured_streaming.py is the same pipeline written with the Structured Streaming API;
-it needs Hadoop's Windows native libraries for checkpointing and could not be run on the
-development machine, which is why this DStream variant produced the reported results.
+part_e_structured_streaming.py is the same pipeline written with the Structured Streaming API,
+and part_e_kafka_streaming.py reads a real Kafka topic (replayed or live Lichess games).
 """
 import json
 import socket
@@ -20,7 +19,7 @@ from operator import add
 import pandas as pd
 from pyspark.streaming import StreamingContext
 
-from common import DATA, RESULTS, get_spark
+from common import DATA, RESULTS, environment, get_spark
 
 HOST, PORT = "localhost", 9999
 N_BATCHES, ROWS_PER_BATCH, INTERVAL = 20, 10000, 3   # 200k games, one burst every 3 s
@@ -119,7 +118,8 @@ summary = {"api": "Spark Streaming (DStream micro-batches)", "bursts_sent": N_BA
            "rows_per_burst": ROWS_PER_BATCH, "batch_interval_seconds": INTERVAL,
            "non_empty_batches": len(batch_log),
            "records_processed": sum(r["records"] for r in batch_log),
-           "wall_seconds": round(time.time() - t0, 1)}
+           "running_totals_final": dict(totals),
+           "wall_seconds": round(time.time() - t0, 1), "environment": environment()}
 with open(f"{RESULTS}/part_e_summary.json", "w") as fh:
     json.dump(summary, fh, indent=2)
 print(summary)

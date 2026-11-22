@@ -1,0 +1,21 @@
+{
+  "api": "Structured Streaming (socket source, foreachBatch + complete-mode aggregate)",
+  "bursts_sent": 20,
+  "rows_per_burst": 10000,
+  "trigger_seconds": 3,
+  "non_empty_batches": 20,
+  "records_processed": 200000,
+  "running_totals_final": {
+    "Normal": 134978,
+    "Time forfeit": 64968,
+    "Rules infraction": 54
+  },
+  "wall_seconds": 76.3,
+  "environment": {
+    "python": "3.11.11",
+    "pyspark": "3.5.3",
+    "os": "Linux 5.15.167.4-microsoft-standard-WSL2",
+    "cpus": 20,
+    "master": "local[*]"
+  }
+}
